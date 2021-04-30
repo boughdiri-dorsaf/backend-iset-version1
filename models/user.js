@@ -7,70 +7,120 @@ class User{
     }
 
     static getUsers(callBack){
-      connexion.query('Select * from users', (err, rows) => {
+      connexion.query('Select * from user', (err, rows) => {
         if(err) throw err
         callBack(rows.map((row) => new User(row)))
       })
     };
 
     static create(data, callback){
-        connexion.query(
-            'INSERT INTO `users`(`email`, `password`, `username`) VALUES (?, ?, ?)',[data.email, data.password, data.username], (err, res) => {
-                if(err){
-                    return callback(err);
-                } 
-                return callback(null, res)
-              }
-        );
+      connexion.query('INSERT INTO `user`(`email`, `password`, `id_role`, `nom`, `prenom`, `age`, `cin`, `sexe`, `num_passport`, `date_naissance`) VALUES (?,?,?,?,?,?,?,?,?,?)',
+      [
+       data.email,
+       data.password,
+       1,
+       data.nom,
+       data.prenom,
+       data.age,
+       data.cin,
+       data.sexe,
+       data.num_passport,
+       data.date_naissance 
+      ], (err, res) => {
+        if(err) throw err
+        this.createAdresse(data,res.insertId,function(){})      
+        return callback(null, res);
+
+        
+      })
+    }
+    static createAdresse(data, id_user, callback){
+      connexion.query('INSERT INTO `adresse`( `code_postale`, `rue`, `ville`, `gouvernorat_adresse`, `pays`, `id_user`) VALUES (?,?,?,?,?,?)',
+      [
+       data.code_postale,
+       data.rue,
+       data.ville,
+       data.gouvernorat_adresse,
+       data.pays,
+       id_user
+      ], 
+      (err, res) => {
+        if(err) throw err      
+        return callback(null, res);
+
+      }
+      )
+    }
+
+    static getUserByUserId(id, callBack){
+      connexion.query(
+        `select * from user, adresse where user.id_user = adresse.id_user and user.id_user=?`,
+        [id],
+        (error, results, fields) => {
+          if (error) {
+            callBack(error);
+          }
+          return callBack(null, results);
+        }
+      );
     };
 
-  static getUserByUserId(id, callBack){
-    connexion.query(
-      `select id,email,username from users where id = ?`,
-      [id],
-      (error, results, fields) => {
-        if (error) {
-          callBack(error);
-        }
-        return callBack(null, results[0]);
+  static getAdresse(id_user, callBack){
+    connexion.query('select * from adresse where id_user = ?',
+    [
+     id_user
+    ], 
+    (error, results, fields) => {
+      if (error) {
+        callBack(error);
       }
+    }
     );
-  };
+  }
 
   static updateUser(data, callBack){
-    connexion.query(
-      `update users set email=?, password=?, username=? where id = ?`,
+    connexion.query('Update `user` set `email` = ?, `password` = ?, `id_role` = ?, `nom` = ?, `prenom` = ?, `age` = ?, `cin` = ?, `sexe` = ?, `num_passport` = ?, `date_naissance` = ? where id_user = ?',
       [
-        data.email,
-        data.password,
-        data.username,
-        data.id
-      ],
-      (error, results, fields) => {
-        if (error) {
-          callBack(error);
-        }
-        return callBack(null, results);
+       data.email,
+       data.password,
+       1,
+       data.nom,
+       data.prenom,
+       data.age,
+       data.cin,
+       data.sexe,
+       data.num_passport,
+       data.date_naissance,
+       data.id_user
+      ], (err, res) => {
+        if(err) throw err
+        this.updateAdresse(data, function(){})
+        return callBack(null, res);
       }
     );
   };
 
-  static deleteUser(id, callBack){
-    connexion.query(
-      `delete from users where id = ?`,
-      [id],
-      (error, results, fields) => {
-        if (error) {
-          callBack(error);
-        }
-        return callBack(null, results[0]);
-      }
-    );
-  };
+  static updateAdresse(data, callback){
+    connexion.query('update `adresse`set `code_postale` = ?, `rue` = ?, `ville` = ?, `gouvernorat_adresse` = ?, `pays` = ? where `id_user` = ?',
+    [
+     data.code_postale,
+     data.rue,
+     data.ville,
+     data.gouvernorat_adresse,
+     data.pays,
+     data.id_user
+    ], 
+    (err, res) => {
+      if(err) throw err
+      return callback(null, res);
+
+    }
+    )
+  }
 
   static getUserByUserEmail(email, callBack){
     connexion.query(
-      `select * from users where email = ?`,
+      `select * from user where email = ?`,
       [email],
       (error, results, fields) => {
         if (error) {
@@ -81,7 +131,7 @@ class User{
     );
   };
   
-
+  
     
 }
 
