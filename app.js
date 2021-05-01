@@ -7,13 +7,16 @@ const { genSaltSync, hashSync, compareSync } = require("bcrypt");
 const versionApi = '/api';
 const { sign } = require("jsonwebtoken");
 const { checkToken } = require("./auth/token_validation")
+const uuidv1 = require('uuid/v1');
+const jwt = require("jsonwebtoken");
+const _ = require("lodash");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
 
-app.get(`${versionApi}/users`, checkToken,(req, res) => {
+app.get(`${versionApi}/users`,(req, res) => {
         User.getUsers((results, err) => {
             if (err) {
               console.log(err);
@@ -26,7 +29,7 @@ app.get(`${versionApi}/users`, checkToken,(req, res) => {
         });
 })
 
-app.post(`${versionApi}/users/signup`, (req, res) => {
+app.post(`${versionApi}/users/signup`,(req, res) => {
     if(req.body === undefined || req.body === ''){
         res.json("Vous n'avez pas entré de informations :( ")
     }else{
@@ -189,32 +192,91 @@ app.patch(`${versionApi}/admin`, (req, res) => {
   }
 });
 
-app.post(`${versionApi}/users/forgotPassword`, (req, res) => {
-  const thisUser = Admin.getAdminByEmail(req.body.email);
-  if (thisUser) {
-    const id = uuidv1();
-    const request = {
-        id,
-        email: thisUser.email,
-    };
-    createResetRequest(request);
-    sendResetLink(thisUser.email, id);
-  }
-  res.status(200).json();
+app.put(`${versionApi}/users/forgotPassword`, (req, res) => {
+  const body = req.body;
+    User.getUserByUserEmail(body.email, (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+      if (!results) {
+        return res.json({
+          success: 0,
+          data: "User with this mail does not exist"
+        });
+      }
+      //const result = compareSync(body.password, results.password);
+      if (results) {
+        const token = jwt.sign({_id: results._id}, process.env.RESET_PASSWORD_KEY, {expiresIn: '20m'});
+        const data = {
+          from: 'noreply@iset.com',
+          to: 'dorsaf@gmail.com',
+          subject: 'account reset password link',
+          html: `
+            <h2>Please click on given link to reset your password</h2>
+            <p>${process.env.CLIENT_URL}/users/resetpassword/${token}</p>      
+          `
+        };
+
+        return User.updateResetLinkUser(token, body.email, (err, results) => {
+          if (err) {
+            return res.json({
+              error: err.message
+            });
+          }else{
+            //pass req for mail
+            return res.json({
+              success: 1,
+              data: "Email has been sent, kindly follow the instruction"
+            });
+          }
+        });
+      }
+    });
 }); 
  
-app.patch(`${versionApi}/users/resetPassword`, (req, res) => {
-    const thisRequest = getResetRequest(req.body.id);
-    if (thisRequest) {
-      const user =  Admin.getAdminByEmail(thisRequest.email);
-      bcrypt.hash(req.body.password, 10).then(hashed => {
-          user.password = hashed;
-          updateUser(user);
-          res.status(204).json();
-      })
-  } else {
-      res.status(404).json();
-  }
+app.put(`${versionApi}/users/resetPassword`, (req, res) => {
+    const body =req.body;
+    if(body.resetLink){
+      jwt.verify(body.resetLink, process.env.RESET_PASSWORD_KEY, (err, results) => {
+        if(err){
+          return res.status(401).json({
+            success: 0,
+            data: "Incorrect token or it is expired"
+          });
+        }
+        User.getPasswordUser(body.resetLink, (err, results) => {
+          if(err){
+            return res.status(400).json({
+              success: 0,
+              data: "User with this token does not exist"
+            });
+          }
+
+          const salt = genSaltSync(10);
+          body.newPassword = hashSync(body.newPassword, salt);
+
+          User.updatePasswordUser(body.newPassword, body.resetLink, (err, result) =>{
+            if(err){
+              return res.status(400).json({
+                success: 0,
+                data: "reset password error"
+              });
+            }else{
+                return res.status(200).json({
+                  success: 1,
+                  data: "Your password has been changed"
+                });
+              
+            }
+          })
+        });
+      });
+    }else{
+      return res.status(401).json({
+        success: 0,
+        data: "Authentication error"
+      });
+    }
 });
 
  

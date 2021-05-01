@@ -130,7 +130,53 @@ class User{
       }
     );
   };
+
+  static updateResetLinkUser(password, email, callBack){
+    connexion.query(
+      'update user set reset_link =? where `email` = ?',
+      [
+        password,
+        email
+      ],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  };
   
+  static getPasswordUser(resetLink, callBack){
+    connexion.query(
+      'select password from user where reset_link = ?',
+      [
+        resetLink,
+      ],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  };
+
+  static updatePasswordUser(password, resetLink, callBack){
+    connexion.query(
+      'update user set password = ? where reset_link = ?',
+      [
+        password,
+        resetLink
+      ],
+      (error, results, fields) => {
+        if (error) {
+          callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  };
   
     
 }
