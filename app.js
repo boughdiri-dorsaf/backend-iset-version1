@@ -1,21 +1,24 @@
 require("dotenv").config();
-const User = require('./models/user');
-const Admin = require('./models/admin');
+
 const app = require('express')();
 let bodyParser = require('body-parser')
 const { genSaltSync, hashSync, compareSync } = require("bcrypt");
-const versionApi = '/api';
 const { sign } = require("jsonwebtoken");
 const { checkToken } = require("./auth/token_validation")
-const uuidv1 = require('uuid/v1');
 const jwt = require("jsonwebtoken");
-const _ = require("lodash");
+
+const User = require('./models/user');
+const Admin = require('./models/admin');
+
+//Mail configuration
+  const mailgun = require("mailgun-js")
+  const DOMAIN = 'sandbox8cbfcafa2ff54adfabcbdba4ce193360.mailgun.org';
+  const mg = mailgun({apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN})
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-
-
+const versionApi = '/api';
+//User requests 
 app.get(`${versionApi}/users`,(req, res) => {
         User.getUsers((results, err) => {
             if (err) {
@@ -123,7 +126,9 @@ app.post(`${versionApi}/users/login`, (req, res) => {
         return res.json({
           success: 1,
           message: "login successfully",
-          token: jsontoken
+          token: jsontoken,
+          id_user: results.id_user
+
         });
       } else {
         return res.json({
@@ -134,6 +139,7 @@ app.post(`${versionApi}/users/login`, (req, res) => {
     });
 }); 
 
+//Admin requests
 app.post(`${versionApi}/admin/login`, (req, res) => {
   const body = req.body;
   Admin.getAdminByEmail(body.email, (err, results) => {
@@ -204,12 +210,13 @@ app.put(`${versionApi}/users/forgotPassword`, (req, res) => {
           data: "User with this mail does not exist"
         });
       }
+      const email = body.email;
       //const result = compareSync(body.password, results.password);
       if (results) {
         const token = jwt.sign({_id: results._id}, process.env.RESET_PASSWORD_KEY, {expiresIn: '20m'});
         const data = {
-          from: 'noreply@iset.com',
-          to: 'dorsaf@gmail.com',
+          from: 'noreply@bdorsaf.com',
+          to: email,
           subject: 'account reset password link',
           html: `
             <h2>Please click on given link to reset your password</h2>
@@ -224,10 +231,20 @@ app.put(`${versionApi}/users/forgotPassword`, (req, res) => {
             });
           }else{
             //pass req for mail
-            return res.json({
-              success: 1,
-              data: "Email has been sent, kindly follow the instruction"
+            mg.messages().send(data, function (error, body) {
+              if(error){
+                return res.json({
+                  error: error.message
+                });
+              }else{
+                return res.json({
+                  success: 1,
+                  message: "Email has been sent, kindly follow the instruction"
+                });
+              }
             });
+
+            
           }
         });
       }
@@ -279,7 +296,7 @@ app.put(`${versionApi}/users/resetPassword`, (req, res) => {
     }
 });
 
- 
+//Creation dde master requests
 app.listen(process.env.APP_PORT, ()=>{
     console.log("Server up and running on port: ", process.env.APP_PORT);
 })
