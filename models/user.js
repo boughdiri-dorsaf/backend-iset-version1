@@ -34,6 +34,7 @@ class User{
         
       })
     }
+    
     static createAdresse(data, id_user, callback){
       connexion.query('INSERT INTO `adresse`( `code_postale`, `rue`, `ville`, `gouvernorat_adresse`, `pays`, `id_user`) VALUES (?,?,?,?,?,?)',
       [
