@@ -323,7 +323,8 @@ app.post(`${versionApi}/masters/createMaster`,(req, res) => {
       })
   }
 })
-//Creation de departement requests************************************************************
+
+//CRUD de departement requests************************************************************
 
 app.get(`${versionApi}/departement`,(req, res) => {
   Departement.getListDepartement((results, err) => {
@@ -396,7 +397,7 @@ if(req.body === undefined || req.body === ''){
       if (!results) {
         return res.json({
           success: 0,
-          message: "Failed to update user"
+          message: "Failed to update etablissement"
         });
       }
       return res.status(200).json({
@@ -408,6 +409,107 @@ if(req.body === undefined || req.body === ''){
 });
 
 app.delete(`${versionApi}/departement/:id`, (req, res) => {
+    const params = req.params;
+    Departement.deleteDepartement(params.id, (err, results) => {
+        if (err) {
+            console.log(err);
+            return;
+        }else{
+          return res.status(200).json({
+              success : 1,
+              data : "delete success"
+          });
+        }
+    });
+  
+  });
+
+  //CRUD de etablissement requests************************************************************
+
+app.get(`${versionApi}/etablissement`,(req, res) => {
+  Etablissement.getListEtablissement((results, err) => {
+      if (err) {
+        console.log(err);
+        return;
+      }else{
+        return res.json({
+          success: 1,
+          data: results
+        });
+      }
+  });
+})
+
+app.post(`${versionApi}/etablissement`, (req, res) => {
+if(req.body === undefined || req.body === ''){
+  res.json("Vous n'avez pas entré de informations :( ")
+}else{
+  const body = req.body;
+  Etablissement.createAdresse(body, (err, results) => {
+      if(err){
+          console.log(err);
+      }
+      if (!results) {
+        return res.json({
+          success: 0,
+          message: "Failed to add user"
+        });
+      }
+      return res.status(200).json({
+          success : 1,
+          data : results
+      });
+  })
+}
+})
+
+app.get(`${versionApi}/etablissement/:id`, (req, res) => {
+const id = req.params.id;
+Etablissement.getEtablissementById(id, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "Record not Found"
+      });
+    }
+    results.password = undefined;
+    return res.json({
+      success: 1,
+      data: results
+    });
+  });
+})
+
+app.patch(`${versionApi}/etablissement`, (req, res) => {
+if(req.body === undefined || req.body === ''){
+  res.json("Vous n'avez pas entré de message :( ")
+}else{
+  const body = req.body;
+  Etablissement.updateEtablissement(body, (err, results) => {
+      if (err) {
+          console.log(err);
+          return;
+      }
+      else if (!results) {
+        return res.json({
+          success: 0,
+          message: "Failed to update etablissement"
+        });
+      }else{
+        return res.status(200).json({
+            success : 1,
+            data : req.body
+        });
+      }
+  });
+}
+});
+
+app.delete(`${versionApi}/etablissement/:id`, (req, res) => {
     const params = req.params;
     Departement.deleteDepartement(params.id, (err, results) => {
         if (err) {

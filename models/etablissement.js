@@ -6,7 +6,7 @@ class Etablissement {
     }
 
 
-    static createAdresse(data, id_user, callBack) {
+    static createAdresse(data, callBack) {
         connexion.query('INSERT INTO `adresse`( `code_postale`, `rue`, `ville`, `gouvernorat_adresse`, `pays`, `id_user`) VALUES (?,?,?,?,?,?)',
             [
                 data.code_postale,
@@ -14,12 +14,12 @@ class Etablissement {
                 data.ville,
                 data.gouvernorat_adresse,
                 data.pays,
-                id_user
+                null
             ],
             (err, rows) => {
                 if (err) throw err;
-                this.createEtablissement(data, res.insertId, function(){})
-                callBack(null, res);
+                this.createEtablissement(data, rows.insertId, function(){})
+                callBack(null, rows);
             });
     }
 
@@ -29,7 +29,7 @@ class Etablissement {
             [data.libelle, id_adresse],
             (err, rows) => {
                 if (err) throw err;
-                callBack(null, res);
+                callBack(null, rows);
             });
     }
 
@@ -47,49 +47,22 @@ class Etablissement {
             [id],
             (err, rows) => {
                 if (err) throw err;
-                callBack(null, res);
+                callBack(null, rows);
             }
         );
     }
-
-    static updateAdresse(data, callback) {
-        connexion.query('update `adresse`set `code_postale` = ?, `rue` = ?, `ville` = ?, `gouvernorat_adresse` = ?, `pays` = ? where `id_user` = ?',
-            [
-                data.code_postale,
-                data.rue,
-                data.ville,
-                data.gouvernorat_adresse,
-                data.pays,
-                null
-            ],
-            (err, res) => {
-                if (err) throw err
-                this.updateAdresse(data, res.insertId, function () { });
-                return callback(null, res);
-
-            }
-        )
-    }
-
+    
     static updateEtablissement(data, callBack) {
         connexion.query(
-            "UPDATE `etablissement` SET libelle`=?,`id_adresse`=? where id = ?",
-            [data.libelle, id_adresse, data.idEtablissement],
+            "UPDATE `etablissement`,adresse SET etablissement.libelle =?,adresse.code_postale =?, adresse.rue =?, adresse.ville = ?, adresse.gouvernorat_adresse = ?, adresse.pays = ?, adresse.id_user = ? where etablissement.id_adresse = adresse.id_adresse and etablissement.id_etablissement = ?",
+            [data.libelle,data.code_postale, data.rue, data.ville, data.gouvernorat_adresse, data.pays, null, data.id_etablissement],
             (err, rows) => {
                 if (err) throw err;
-                callBack(null, res);
+                callBack(null, rows);
             }
         );
     }
 
-    static deleteEtablissement(id, callBack) {
-        connexion.query("DELETE FROM `etablissement` where id = ?",
-            [id],
-            (err, res) => {
-                if (err) throw err;
-                return callBack(null, res);
-            });
-    }
 }
 
 module.exports = Etablissement;
