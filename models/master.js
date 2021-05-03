@@ -18,46 +18,12 @@ class Master {
     }
 
     static getListMaster(callBack) {
-        connexion.query("SELECT * FROM `departement`",
+        connexion.query("select * from master, departement, etablissement, adresse where master.id_departement = departement.id_departement and master.id_etablissement=etablissement.id_etablissement and etablissement.id_adresse = adresse.id_adresse",
             (err, res) => {
                 if (err) throw err;
-                callBack(res.map((row) => new Departement(row)))
+                callBack(res.map((row) => new Master(row)))
             });
     }
-
-    static getMasterById(id, callBack) {
-        connexion.query(
-            "SELECT * FROM `departement` where id_departement = ?",
-            [id],
-            (err, res) => {
-                if (err) throw err;
-                return callBack(null, res);
-            }
-        );
-    }
-
-    static updateMaster(data, callBack) {
-        connexion.query(
-            "UPDATE `departement` SET `code`=?,`libelle`=?,`description`=? where id_departement = ?",
-            [data.code, data.libelle, data.description, data.id_departement],
-            (err, res) => {
-                if (err) throw err;
-                return callBack(null, res);
-            }
-        );
-    }
-
-    static deleteMaster(id, callBack) {
-        connexion.query(
-            "DELETE FROM `departement` where id_departement = ?",
-            [id],
-            (err, res) => {
-                if (err) throw err;
-                return callBack(null, res);
-            }
-        );
-    }
-
 
 }
 
