@@ -6,40 +6,58 @@ class Master {
         this.row = row;
     }
 
-    static create(content, cb) {
-        connexion.query('INSERT INTO `message`(`content`, `created_at`) VALUES (?, ?)', [content, new Date()], (err, res) => {
-            if (err) throw err
-            cb(res)
-        })
+    static createMaster(data, callBack) {
+        connexion.query(
+            "INSERT INTO `master`(`nom`, `id_departement`, `seuil_admission`, `seuil_admis_attente`, `date_fin_master`, `id_etablissement`) VALUES (?, ?, ?, ?, ?, ?)",
+            [data.nom, data.id_departement, data.seuil_admission, data.seuil_admis_attente, data.date_fin_master, data.id_etablissement],
+            (err, res) => {
+                if (err) throw err;
+                return callBack(null, res);
+            }
+        );
     }
 
-    static all(cb) {
-        connexion.query('Select * from message', (err, rows) => {
-            if (err) throw err
-            cb(rows.map((row) => new Message(row)))
-        })
+    static getListMaster(callBack) {
+        connexion.query("SELECT * FROM `departement`",
+            (err, res) => {
+                if (err) throw err;
+                callBack(res.map((row) => new Departement(row)))
+            });
     }
 
-    static find(id, cb) {
-        connexion.query('Select * from message where id = ? limit 1', [id], (err, rows) => {
-            if (err) throw err
-            cb(new Message(rows[0]))
-        })
+    static getMasterById(id, callBack) {
+        connexion.query(
+            "SELECT * FROM `departement` where id_departement = ?",
+            [id],
+            (err, res) => {
+                if (err) throw err;
+                return callBack(null, res);
+            }
+        );
     }
 
-    static update(content, id, cb) {
-        connexion.query('UPDATE message SET content = ?, created_at = ? where id = ?', [content, new Date(), id], (err, rows) => {
-            if (err) throw err
-            cb(new Message(rows[0]))
-        })
+    static updateMaster(data, callBack) {
+        connexion.query(
+            "UPDATE `departement` SET `code`=?,`libelle`=?,`description`=? where id_departement = ?",
+            [data.code, data.libelle, data.description, data.id_departement],
+            (err, res) => {
+                if (err) throw err;
+                return callBack(null, res);
+            }
+        );
     }
 
-    static delete(id, cb) {
-        connexion.query('delete from message where id = ?', [id], (err, rows) => {
-            if (err) throw err
-            cb(new Message(rows[0]))
-        })
+    static deleteMaster(id, callBack) {
+        connexion.query(
+            "DELETE FROM `departement` where id_departement = ?",
+            [id],
+            (err, res) => {
+                if (err) throw err;
+                return callBack(null, res);
+            }
+        );
     }
+
 
 }
 
