@@ -348,7 +348,7 @@ app.post(`${versionApi}/departement`, (req, res) => {
       if (!results) {
         return res.json({
           success: 0,
-          message: "Failed to add user"
+          message: "Failed to add departement"
         });
       }
       return res.status(200).json({
@@ -448,7 +448,7 @@ app.post(`${versionApi}/etablissement`, (req, res) => {
       if (!results) {
         return res.json({
           success: 0,
-          message: "Failed to add user"
+          message: "Failed to add etablissment"
         });
       }
       return res.status(200).json({
@@ -559,6 +559,68 @@ app.post(`${versionApi}/master`, (req, res) => {
     })
   }
 })
+
+app.get(`${versionApi}/master/:id`, (req, res) => {
+  const id = req.params.id;
+  Master.getMasterById(id, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "Record not Found"
+      });
+    }
+    results.password = undefined;
+    return res.json({
+      success: 1,
+      data: results
+    });
+  });
+})
+
+app.patch(`${versionApi}/master`, (req, res) => {
+  if (req.body === undefined || req.body === '') {
+    res.json("Vous n'avez pas entré de message :( ")
+  } else {
+    const body = req.body;
+    Master.updateMaster(body, (err, results) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      else if (!results) {
+        return res.json({
+          success: 0,
+          message: "Failed to update etablissement"
+        });
+      } else {
+        return res.status(200).json({
+          success: 1,
+          data: req.body
+        });
+      }
+    });
+  }
+});
+
+app.delete(`${versionApi}/master/:id`, (req, res) => {
+  const params = req.params;
+  Master.deleteMaster(params.id, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      return res.status(200).json({
+        success: 1,
+        data: "delete success"
+      });
+    }
+  });
+
+});
 
 
 //CRUD de role requests************************************************************
