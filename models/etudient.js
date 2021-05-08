@@ -17,7 +17,7 @@ class Etudient {
     }
 
     static getListEtudient(callBack) {
-        connexion.query("SELECT * FROM `etudiant`,classe,departement,cursus,user WHERE etudiant.id_classe=classe.id_classe and etudiant.id_departement=departement.id_departement and etudiant.id_cursus=cursus.id_cursus and etudiant.id_user=user.id_user",
+        connexion.query("SELECT * FROM `etudiant`,classe,departement,user,adresse WHERE etudiant.id_classe=classe.id_classe and etudiant.id_departement=departement.id_departement and etudiant.id_user=user.id_user and user.id_user=adresse.id_user",
             (err, res) => {
                 if (err) throw err;
                 callBack(res.map((row) => new Etudient(row)))
@@ -25,10 +25,10 @@ class Etudient {
         );
     }
 
-    static getEtudientById(id_classe, callBack) {
+    static getEtudientById(id_etudiant, callBack) {
         connexion.query(
-            "SELECT * FROM `etudiant`,classe,departement,cursus,user WHERE etudiant.id_classe=classe.id_classe and etudiant.id_departement=departement.id_departement and etudiant.id_cursus=cursus.id_cursus and etudiant.id_user=user.id_user and etudiant.id_etudiant =?",
-            [id_classe],
+            "SELECT * FROM `etudiant`,classe,departement,user,adresse WHERE etudiant.id_classe=classe.id_classe and etudiant.id_departement=departement.id_departement and etudiant.id_user=user.id_user and user.id_user=adresse.id_user and etudiant.id_etudiant=?",
+            [id_etudiant],
             (err, res) => {
                 if (err) throw err;
                 return callBack(null, res);
@@ -38,8 +38,8 @@ class Etudient {
 
     static updateEtudient(data, callBack) {
         connexion.query(
-            "UPDATE `etudiant` SET `id_etudiant`=?,`gouvern_naissance`=?,`situation`=?,`id_classe`=?,`id_departement`=?,`id_cursus`=?,`id_user`=? WHERE etudiant.id_etudiant =?",
-            [data.gouvern_naissance, data.situation, data.id_classe, data.id_departement, data.id_cursus, data.id_user, data.id_etudiant],
+            "UPDATE `etudiant` SET `gouvern_naissance`=?,`situation`=?,`id_classe`=?,`id_departement`=?,`id_user`=? WHERE id_etudiant =?",
+            [data.gouvern_naissance, data.situation, data.id_classe, data.id_departement, data.id_user, data.id_etudiant],
             (err, res) => {
                 if (err) throw err;
                 return callBack(null, res);

@@ -833,7 +833,7 @@ app.delete(`${versionApi}/responsablegrp/:id`, (req, res) => {
 //CRUD de Etudient requests************************************************************
 
 app.get(`${versionApi}/etudiant`, (req, res) => {
-  Etudient.getListResponsableGroup((results, err) => {
+  Etudient.getListEtudient((results, err) => {
     if (err) {
       console.log(err);
       return;
@@ -858,7 +858,7 @@ app.post(`${versionApi}/etudiant`, (req, res) => {
       if (!results) {
         return res.json({
           success: 0,
-          message: "Failed to add responsable groupe"
+          message: "Failed to add etudiant"
         });
       }
       return res.status(200).json({
@@ -869,9 +869,9 @@ app.post(`${versionApi}/etudiant`, (req, res) => {
   }
 })
 
-app.get(`${versionApi}/responsablegrp/:id`, (req, res) => {
+app.get(`${versionApi}/etudiant/:id`, (req, res) => {
   const id = req.params.id;
-  ResponsableGroup.getResponsableGroupById(id, (err, results) => {
+  Etudient.getEtudientById(id, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -890,14 +890,12 @@ app.get(`${versionApi}/responsablegrp/:id`, (req, res) => {
   });
 })
 
-app.patch(`${versionApi}/responsablegrp`, (req, res) => {
+app.patch(`${versionApi}/etudiant`, (req, res) => {
   if (req.body === undefined || req.body === '') {
     res.json("Vous n'avez pas entré de message :( ")
   } else {
     const body = req.body;
-    const salt = genSaltSync(10);
-    body.password = hashSync(body.password, salt);
-    ResponsableGroup.update(body, (err, results) => {
+    Etudient.updateEtudient(body, (err, results) => {
       if (err) {
         console.log(err);
         return;
@@ -905,7 +903,7 @@ app.patch(`${versionApi}/responsablegrp`, (req, res) => {
       else if (!results) {
         return res.json({
           success: 0,
-          message: "Failed to update role"
+          message: "Failed to update etudient"
         });
       } else {
         return res.status(200).json({
@@ -917,9 +915,9 @@ app.patch(`${versionApi}/responsablegrp`, (req, res) => {
   }
 });
 
-app.delete(`${versionApi}/responsablegrp/:id`, (req, res) => {
+app.delete(`${versionApi}/etudiant/:id`, (req, res) => {
   const params = req.params;
-  ResponsableGroup.deleteResponsableGroup(params.id, (err, results) => {
+  Etudient.deleteEtudient(params.id, (err, results) => {
     if (err) {
       console.log(err);
       return;
