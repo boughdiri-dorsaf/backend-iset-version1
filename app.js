@@ -52,7 +52,7 @@ app.get(`${versionApi}/users`, (req, res) => {
   });
 })
 
-app.post(`${versionApi}/users/signup`, (req, res) => {
+app.post(`${versionApi}/users`, (req, res) => {
   if (req.body === undefined || req.body === '') {
     res.json("Vous n'avez pas entré de informations :( ")
   } else {
@@ -648,6 +648,111 @@ app.patch(`${versionApi}/role`, (req, res) => {
 app.delete(`${versionApi}/role/:id`, (req, res) => {
   const params = req.params;
   Role.deleteRole(params.id, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      return res.status(200).json({
+        success: 1,
+        data: "delete success"
+      });
+    }
+  });
+
+});
+
+//CRUD de ResponsableGroup requests************************************************************
+
+app.get(`${versionApi}/responsablegrp`, (req, res) => {
+  ResponsableGroup.getListResponsableGroup((results, err) => {
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      return res.json({
+        success: 1,
+        data: results
+      });
+    }
+  });
+})
+
+app.post(`${versionApi}/responsablegrp`, (req, res) => {
+  if (req.body === undefined || req.body === '') {
+    res.json("Vous n'avez pas entré de informations :( ")
+  } else { 
+    const body = req.body;
+    const salt = genSaltSync(10);
+    body.password = hashSync(body.password, salt);
+    ResponsableGroup.create(body, (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+      if (!results) {
+        return res.json({
+          success: 0,
+          message: "Failed to add responsable groupe"
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results
+      });
+    })
+  }
+})
+
+app.get(`${versionApi}/responsablegrp/:id`, (req, res) => {
+  const id = req.params.id;
+  ResponsableGroup.getResponsableGroupById(id, (err, results) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!results) {
+      return res.json({
+        success: 0,
+        message: "Record not Found"
+      });
+    }
+    results.password = undefined;
+    return res.json({
+      success: 1,
+      data: results
+    });
+  });
+})
+
+app.patch(`${versionApi}/responsablegrp`, (req, res) => {
+  if (req.body === undefined || req.body === '') {
+    res.json("Vous n'avez pas entré de message :( ")
+  } else {
+    const body = req.body;
+    const salt = genSaltSync(10);
+    body.password = hashSync(body.password, salt);
+    ResponsableGroup.update(body, (err, results) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      else if (!results) {
+        return res.json({
+          success: 0,
+          message: "Failed to update role"
+        });
+      } else {
+        return res.status(200).json({
+          success: 1,
+          data: req.body
+        });
+      }
+    });
+  }
+});
+
+app.delete(`${versionApi}/responsablegrp/:id`, (req, res) => {
+  const params = req.params;
+  ResponsableGroup.deleteResponsableGroup(params.id, (err, results) => {
     if (err) {
       console.log(err);
       return;

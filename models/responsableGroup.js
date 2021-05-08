@@ -6,18 +6,19 @@ class ResponsableGroup {
     }
 
     static create(data, callback) {
-        connexion.query('INSERT INTO `user`(`email`, `password`, `id_role`, `nom`, `prenom`, `age`, `cin`, `sexe`, `num_passport`, `date_naissance`) VALUES (?,?,?,?,?,?,?,?,?,?)',
+        connexion.query('INSERT INTO `user`( `nom`, `prenom`, `email`, `password`,`age`, `cin`, `sexe`, `num_passport`, `date_naissance`,`id_role`,reset_link) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
             [
-                data.email,
-                data.password,
-                1,
                 data.nom,
                 data.prenom,
+                data.email,
+                data.password,
                 data.age,
                 data.cin,
                 data.sexe,
                 data.num_passport,
-                data.date_naissance
+                data.date_naissance,
+                data.id_role,
+                null
             ], (err, res) => {
                 if (err) throw err
                 this.createResponsableGroup(data, res.insertId, function () { })
@@ -25,7 +26,7 @@ class ResponsableGroup {
             })
     }
 
-    static createResponsableGroup(data, callBack) {
+    static createResponsableGroup(data, id_user, callBack) {
         connexion.query(
             "INSERT INTO `responsable_group`(`qualite`, `id_user`) VALUES (?, ?)",
             [data.qualite, id_user],
