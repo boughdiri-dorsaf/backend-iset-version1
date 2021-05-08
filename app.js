@@ -24,6 +24,7 @@ const Specialite = require('./models/specialite');
 //Mail configuration***********************************************
 const mailgun = require("mailgun-js");
 const DemandeMaster = require("./models/demandeMaster");
+const { curry } = require("lodash");
 const DOMAIN = 'sandbox8cbfcafa2ff54adfabcbdba4ce193360.mailgun.org';
 const mg = mailgun({ apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN })
 
@@ -997,9 +998,7 @@ app.patch(`${versionApi}/cursus`, (req, res) => {
     res.json("Vous n'avez pas entré de message :( ")
   } else {
     const body = req.body;
-    const salt = genSaltSync(10);
-    body.password = hashSync(body.password, salt);
-    ResponsableGroup.update(body, (err, results) => {
+    Cursus.updateCursus(body, (err, results) => {
       if (err) {
         console.log(err);
         return;
@@ -1021,7 +1020,7 @@ app.patch(`${versionApi}/cursus`, (req, res) => {
 
 app.delete(`${versionApi}/cursus/:id`, (req, res) => {
   const params = req.params;
-  ResponsableGroup.deleteResponsableGroup(params.id, (err, results) => {
+  Cursus.deleteCursus(params.id, (err, results) => {
     if (err) {
       console.log(err);
       return;
