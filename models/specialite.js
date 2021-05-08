@@ -7,8 +7,8 @@ class Specialite {
 
     static createSpecialite(data, callBack) {
         connexion.query(
-            "INSERT INTO `specialite`(`libelle`) VALUES (?)",
-            [data.libelle],
+            "INSERT INTO `specialite`(`libelle`, id_domaine) VALUES (?,?)",
+            [data.libelle, data.id_domaine],
             (err, res) => {
                 if (err) throw err;
                 return callBack(null, res);

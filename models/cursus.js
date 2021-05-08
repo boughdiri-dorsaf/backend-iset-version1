@@ -7,8 +7,8 @@ class Cursus {
 
     static createCursus(data, callBack) {
         connexion.query(
-            "INSERT INTO `cursus`(`annee`, `moyenne`, `credit`, `mention`, `session`, `note_pfe`, `id_domaine`, `id_etablissement`, `id_specialite`, `id_niveau`) VALUES (?,?,?,?,?,?,?,?,?,?)",
-            [data.annee, data.moyenne, data.credit,data.mention, data.session, data.note_pfe, data.id_domaine, data.id_etablissement, data.id_specialite, data.id_niveau],
+            "INSERT INTO `cursus`(`annee`, `moyenne`, `credit`, `mention`, `session`, `note_pfe`, `id_domaine`, `id_etablissement`, id_niveau, id_etudient) VALUES (?,?,?,?,?,?,?,?,?,?)",
+            [data.annee, data.moyenne, data.credit,data.mention, data.session, data.note_pfe, data.id_domaine, data.id_etablissement, data.id_niveau, data.id_etudient],
             (err, res) => {
                 if (err) throw err;
                 return callBack(null, res);

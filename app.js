@@ -23,6 +23,7 @@ const Specialite = require('./models/specialite');
 
 //Mail configuration***********************************************
 const mailgun = require("mailgun-js");
+const DemandeMaster = require("./models/demandeMaster");
 const DOMAIN = 'sandbox8cbfcafa2ff54adfabcbdba4ce193360.mailgun.org';
 const mg = mailgun({ apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN })
 
@@ -765,6 +766,287 @@ app.delete(`${versionApi}/responsablegrp/:id`, (req, res) => {
   });
 
 });
+
+
+//CRUD de Etudient requests************************************************************
+
+app.get(`${versionApi}/etudiant`, (req, res) => {
+  Etudient.getListResponsableGroup((results, err) => {
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      return res.json({
+        success: 1,
+        data: results
+      });
+    }
+  });
+})
+
+app.post(`${versionApi}/etudiant`, (req, res) => {
+  if (req.body === undefined || req.body === '') {
+    res.json("Vous n'avez pas entré de informations :( ")
+  } else { 
+    const body = req.body;
+    Etudient.createEtudient(body, (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+      if (!results) {
+        return res.json({
+          success: 0,
+          message: "Failed to add responsable groupe"
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results
+      });
+    })
+  }
+})
+
+
+//CRUD de Cursus requests************************************************************
+
+app.get(`${versionApi}/cursus`, (req, res) => {
+  Cursus.getListResponsableGroup((results, err) => {
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      return res.json({
+        success: 1,
+        data: results
+      });
+    }
+  });
+})
+
+app.post(`${versionApi}/cursus`, (req, res) => {
+  if (req.body === undefined || req.body === '') {
+    res.json("Vous n'avez pas entré de informations :( ")
+  } else { 
+    const body = req.body;
+    Cursus.createCursus(body, (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+      if (!results) {
+        return res.json({
+          success: 0,
+          message: "Failed to add cursus"
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results
+      });
+    })
+  }
+})
+
+
+//CRUD de Domaine requests************************************************************
+
+app.get(`${versionApi}/cursus`, (req, res) => {
+  Cursus.getListResponsableGroup((results, err) => {
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      return res.json({
+        success: 1,
+        data: results
+      });
+    }
+  });
+})
+
+app.post(`${versionApi}/domaine`, (req, res) => {
+  if (req.body === undefined || req.body === '') {
+    res.json("Vous n'avez pas entré de informations :( ")
+  } else { 
+    const body = req.body;
+    Domaine.createDomaine(body, (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+      if (!results) {
+        return res.json({
+          success: 0,
+          message: "Failed to add domaine"
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results
+      });
+    })
+  }
+})
+
+
+
+//CRUD de Specialite requests************************************************************
+
+app.get(`${versionApi}/cursus`, (req, res) => {
+  Cursus.getListResponsableGroup((results, err) => {
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      return res.json({
+        success: 1,
+        data: results
+      });
+    }
+  });
+})
+
+app.post(`${versionApi}/specialite`, (req, res) => {
+  if (req.body === undefined || req.body === '') {
+    res.json("Vous n'avez pas entré de informations :( ")
+  } else { 
+    const body = req.body;
+    Specialite.createSpecialite(body, (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+      if (!results) {
+        return res.json({
+          success: 0,
+          message: "Failed to add specialite"
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results
+      });
+    })
+  }
+})
+
+
+//CRUD de Niveau requests************************************************************
+
+app.get(`${versionApi}/cursus`, (req, res) => {
+  Cursus.getListResponsableGroup((results, err) => {
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      return res.json({
+        success: 1,
+        data: results
+      });
+    }
+  });
+})
+
+app.post(`${versionApi}/niveau`, (req, res) => {
+  if (req.body === undefined || req.body === '') {
+    res.json("Vous n'avez pas entré de informations :( ")
+  } else { 
+    const body = req.body;
+    Niveau.createNiveau(body, (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+      if (!results) {
+        return res.json({
+          success: 0,
+          message: "Failed to add niveau"
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results
+      });
+    })
+  }
+})
+
+//CRUD de classe requests************************************************************
+
+app.get(`${versionApi}/cursus`, (req, res) => {
+  Cursus.getListResponsableGroup((results, err) => {
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      return res.json({
+        success: 1,
+        data: results
+      });
+    }
+  });
+})
+
+app.post(`${versionApi}/classe`, (req, res) => {
+  if (req.body === undefined || req.body === '') {
+    res.json("Vous n'avez pas entré de informations :( ")
+  } else { 
+    const body = req.body;
+    Classe.createClasse(body, (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+      if (!results) {
+        return res.json({
+          success: 0,
+          message: "Failed to add classe"
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results
+      });
+    })
+  }
+})
+
+
+//CRUD de demandeMaster requests************************************************************
+
+app.get(`${versionApi}/demandemaster`, (req, res) => {
+  DemandeMaster.createDemandeMaster((results, err) => {
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      return res.json({
+        success: 1,
+        data: results
+      });
+    }
+  });
+})
+
+app.post(`${versionApi}/demandemaster`, (req, res) => {
+  if (req.body === undefined || req.body === '') {
+    res.json("Vous n'avez pas entré de informations :( ")
+  } else { 
+    const body = req.body;
+    DemandeMaster.createDemandeMaster(body, (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+      if (!results) {
+        return res.json({
+          success: 0,
+          message: "Failed to add demande master"
+        });
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results
+      });
+    })
+  }
+})
+
 
 
 

@@ -7,8 +7,8 @@ class Etudient {
 
     static createEtudient(data, callBack) {
         connexion.query(
-            "INSERT INTO `etudiant`(`gouvern_naissance`, `situation`, `id_classe`, `id_departement`, `id_cursus`, `id_user`) VALUES (?,?,?,?,?,?)",
-            [data.gouvern_naissance, data.situation, data.id_classe, data.id_departement, data.id_cursus, data.id_user],
+            "INSERT INTO `etudiant`(`gouvern_naissance`, `situation`, `id_classe`, `id_departement`, `id_user`) VALUES (?,?,?,?,?)",
+            [data.gouvern_naissance, data.situation, data.id_classe, data.id_departement, data.id_user],
             (err, res) => {
                 if (err) throw err;
                 return callBack(null, res);

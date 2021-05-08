@@ -1,14 +1,14 @@
 let connexion = require("../config/db");
 
-class Classe {
+class DemandeMaster {
     constructor(row) {
         this.row = row;
     }
 
-    static createClasse(data, callBack) {
+    static createDemandeMaster(data, callBack) {
         connexion.query(
-            "INSERT INTO `classe`(`libelle`, `id_responsable`, `nb_etudiant`) VALUES (?, ?, ?)",
-            [data.libelle, data.id_responsable_group, data.nb_etudiant],
+            "INSERT INTO `demande_master`(`date_inscrit`, `etat`, `id_master`, `id_etudiant`, `fichier`) VALUES (?,?,?,?,?)",
+            [data.date_inscrit, data.etat, data.id_master, data.id_etudiant, data.fichier],
             (err, res) => {
                 if (err) throw err;
                 return callBack(null, res);
@@ -16,7 +16,7 @@ class Classe {
         );
     }
 
-    static getListClasse(callBack) {
+    static getListDemandeMaster(callBack) {
         connexion.query("SELECT * FROM `classe`,responsable_group,user,adresse WHERE classe.id_responsable=responsable_group.id_responsable_group and responsable_group.id_user=user.id_user and adresse.id_user=user.id_user",
             (err, res) => {
                 if (err) throw err;
@@ -25,7 +25,7 @@ class Classe {
         );
     }
 
-    static getClasseById(id_classe, callBack) {
+    static getDemandeMasterById(id_classe, callBack) {
         connexion.query(
             "SELECT * FROM `classe`,responsable_group,user,adresse WHERE classe.id_responsable=responsable_group.id_responsable_group and responsable_group.id_user=user.id_user and adresse.id_user=user.id_user and classe.id_classe = ?",
             [id_classe],
@@ -36,7 +36,7 @@ class Classe {
         );
     }
 
-    static updateClasse(data, callBack) {
+    static updateDemandeMaster(data, callBack) {
         connexion.query(
             "UPDATE `classe` SET `libelle`=?,`id_responsable`=?,`nb_etudiant`=? WHERE id_classe=?",
             [data.libelle, data.id_responsable, data.nb_etudiant, data.id_classe],
@@ -47,7 +47,7 @@ class Classe {
         );
     }
 
-    static deleteClasse(id_classe, callBack) {
+    static deleteDemandeMaster(id_classe, callBack) {
         connexion.query(
             "DELETE FROM `classe` WHERE `id_classe`=?",
             [id_classe],
@@ -58,4 +58,4 @@ class Classe {
         );
     }
 }
-module.exports = Classe;
+module.exports = DemandeMaster;
