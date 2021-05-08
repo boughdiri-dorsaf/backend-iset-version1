@@ -935,7 +935,7 @@ app.delete(`${versionApi}/etudiant/:id`, (req, res) => {
 //CRUD de Cursus requests************************************************************
 
 app.get(`${versionApi}/cursus`, (req, res) => {
-  Cursus.getListResponsableGroup((results, err) => {
+  Cursus.getListCursus((results, err) => {
     if (err) {
       console.log(err);
       return;
@@ -971,9 +971,9 @@ app.post(`${versionApi}/cursus`, (req, res) => {
   }
 })
 
-app.get(`${versionApi}/responsablegrp/:id`, (req, res) => {
+app.get(`${versionApi}/cursus/:id`, (req, res) => {
   const id = req.params.id;
-  ResponsableGroup.getResponsableGroupById(id, (err, results) => {
+  Cursus.getCursusById(id, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -992,7 +992,7 @@ app.get(`${versionApi}/responsablegrp/:id`, (req, res) => {
   });
 })
 
-app.patch(`${versionApi}/responsablegrp`, (req, res) => {
+app.patch(`${versionApi}/cursus`, (req, res) => {
   if (req.body === undefined || req.body === '') {
     res.json("Vous n'avez pas entré de message :( ")
   } else {
@@ -1007,7 +1007,7 @@ app.patch(`${versionApi}/responsablegrp`, (req, res) => {
       else if (!results) {
         return res.json({
           success: 0,
-          message: "Failed to update role"
+          message: "Failed to update cursus"
         });
       } else {
         return res.status(200).json({
@@ -1019,7 +1019,7 @@ app.patch(`${versionApi}/responsablegrp`, (req, res) => {
   }
 });
 
-app.delete(`${versionApi}/responsablegrp/:id`, (req, res) => {
+app.delete(`${versionApi}/cursus/:id`, (req, res) => {
   const params = req.params;
   ResponsableGroup.deleteResponsableGroup(params.id, (err, results) => {
     if (err) {
