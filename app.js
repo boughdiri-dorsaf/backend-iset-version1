@@ -801,7 +801,7 @@ app.patch(`${versionApi}/responsablegrp`, (req, res) => {
       else if (!results) {
         return res.json({
           success: 0,
-          message: "Failed to update role"
+          message: "Failed to update responsable groupe"
         });
       } else {
         return res.status(200).json({
