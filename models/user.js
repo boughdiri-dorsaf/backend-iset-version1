@@ -121,7 +121,7 @@ class User{
 
   static getUserByUserEmail(email, callBack){
     connexion.query(
-      `select * from user where email = ?`,
+      `select * from user where email = ? and id_role=1`,
       [email],
       (error, results, fields) => {
         if (error) {

@@ -5,28 +5,10 @@ class Etablissement {
         this.row = row;
     }
 
-
-    static createAdresse(data, callBack) {
-        connexion.query('INSERT INTO `adresse`( `code_postale`, `rue`, `ville`, `gouvernorat_adresse`, `pays`, `id_user`) VALUES (?,?,?,?,?,?)',
-            [
-                data.code_postale,
-                data.rue,
-                data.ville,
-                data.gouvernorat_adresse,
-                data.pays,
-                null
-            ],
-            (err, rows) => {
-                if (err) throw err;
-                this.createEtablissement(data, rows.insertId, function(){})
-                callBack(null, rows);
-            });
-    }
-
-    static createEtablissement(data, id_adresse, callBack) {
+    static createEtablissement(data, callBack) {
         connexion.query(
-            "INSERT INTO `etablissement`(`libelle`, `id_adresse`) VALUES (?, ?)",
-            [data.libelle, id_adresse],
+            "INSERT INTO `etablissement`(`libelle`, `code_postale`, `rue`, `ville`, `gouvernorat_adresse`, `pays`) VALUES (?, ?, ?, ?, ?, ?)",
+            [data.libelle, data.code_postale, data.rue, data.ville, data.gouvernorat_adresse, data.pays],
             (err, rows) => {
                 if (err) throw err;
                 callBack(null, rows);
@@ -34,7 +16,7 @@ class Etablissement {
     }
 
     static getListEtablissement(callBack) {
-        connexion.query("SELECT * FROM `etablissement`, adresse WHERE etablissement.id_adresse=adresse.id_adresse",
+        connexion.query("SELECT * FROM `etablissement`",
             (err, rows) => {
                 if (err) throw err;
                 callBack(rows.map((row) => new Etablissement(row)))
@@ -43,7 +25,7 @@ class Etablissement {
 
     static getEtablissementById(id, callBack) {
         connexion.query(
-            "SELECT * FROM `etablissement`, adresse WHERE etablissement.id_adresse=adresse.id_adresse and etablissement.id_etablissement = ? limit 1",
+            "SELECT * FROM `etablissement` WHERE id_etablissement = ?",
             [id],
             (err, rows) => {
                 if (err) throw err;
@@ -54,8 +36,19 @@ class Etablissement {
     
     static updateEtablissement(data, callBack) {
         connexion.query(
-            "UPDATE `etablissement`,adresse SET etablissement.libelle =?,adresse.code_postale =?, adresse.rue =?, adresse.ville = ?, adresse.gouvernorat_adresse = ?, adresse.pays = ?, adresse.id_user = ? where etablissement.id_adresse = adresse.id_adresse and etablissement.id_etablissement = ?",
+            "UPDATE `etablissement` SET libelle =?, code_postale =?, rue =?, ville = ?, gouvernorat_adresse = ?, pays = ? where id_etablissement = ?",
             [data.libelle,data.code_postale, data.rue, data.ville, data.gouvernorat_adresse, data.pays, null, data.id_etablissement],
+            (err, rows) => {
+                if (err) throw err;
+                callBack(null, rows);
+            }
+        );
+    }
+
+    static deleteEtablissement(id_etablissement, callBack) {
+        connexion.query(
+            "delete from `etablissement` where id_etablissement = ?",
+            [id_etablissement],
             (err, rows) => {
                 if (err) throw err;
                 callBack(null, rows);

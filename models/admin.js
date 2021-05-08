@@ -42,7 +42,7 @@ class Admin{
 
     static getAdminByEmail(email, callBack){
         connexion.query(
-        `select * from user where email = ?`,
+        `select * from user where email = ? and id_role=2`,
         [email],
         (error, results, fields) => {
             if (error) {
