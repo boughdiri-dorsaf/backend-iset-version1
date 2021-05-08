@@ -38,8 +38,8 @@ class DemandeMaster {
 
     static updateDemandeMaster(data, callBack) {
         connexion.query(
-            "UPDATE `classe` SET `libelle`=?,`id_responsable`=?,`nb_etudiant`=? WHERE id_classe=?",
-            [data.libelle, data.id_responsable, data.nb_etudiant, data.id_classe],
+            "UPDATE `demande_master` SET `date_inscrit`=?,`etat`=?,`id_master`=?,`id_etudiant`=?,`fichier`=? WHERE id_demande =?",
+            [data.date_inscrit, data.etat, data.id_master, data.id_etudiant, data.fichier, data.id_demande],
             (err, res) => {
                 if (err) throw err;
                 return callBack(null, res);
