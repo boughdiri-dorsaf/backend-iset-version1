@@ -1037,8 +1037,8 @@ app.delete(`${versionApi}/cursus/:id`, (req, res) => {
 
 //CRUD de Domaine requests************************************************************
 
-app.get(`${versionApi}/cursus`, (req, res) => {
-  Cursus.getListResponsableGroup((results, err) => {
+app.get(`${versionApi}/domaine`, (req, res) => {
+  Domaine.getListDomaine((results, err) => {
     if (err) {
       console.log(err);
       return;
@@ -1074,9 +1074,9 @@ app.post(`${versionApi}/domaine`, (req, res) => {
   }
 })
 
-app.get(`${versionApi}/responsablegrp/:id`, (req, res) => {
+app.get(`${versionApi}/domaine/:id`, (req, res) => {
   const id = req.params.id;
-  ResponsableGroup.getResponsableGroupById(id, (err, results) => {
+  Domaine.getDomaineById(id, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -1095,14 +1095,12 @@ app.get(`${versionApi}/responsablegrp/:id`, (req, res) => {
   });
 })
 
-app.patch(`${versionApi}/responsablegrp`, (req, res) => {
+app.patch(`${versionApi}/domaine`, (req, res) => {
   if (req.body === undefined || req.body === '') {
     res.json("Vous n'avez pas entré de message :( ")
   } else {
     const body = req.body;
-    const salt = genSaltSync(10);
-    body.password = hashSync(body.password, salt);
-    ResponsableGroup.update(body, (err, results) => {
+    Domaine.updateDomaine(body, (err, results) => {
       if (err) {
         console.log(err);
         return;
@@ -1122,9 +1120,9 @@ app.patch(`${versionApi}/responsablegrp`, (req, res) => {
   }
 });
 
-app.delete(`${versionApi}/responsablegrp/:id`, (req, res) => {
+app.delete(`${versionApi}/domaine/:id`, (req, res) => {
   const params = req.params;
-  ResponsableGroup.deleteResponsableGroup(params.id, (err, results) => {
+  Domaine.deleteDomaine(params.id, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -1138,12 +1136,10 @@ app.delete(`${versionApi}/responsablegrp/:id`, (req, res) => {
 
 });
 
-
-
 //CRUD de Specialite requests************************************************************
 
-app.get(`${versionApi}/cursus`, (req, res) => {
-  Cursus.getListResponsableGroup((results, err) => {
+app.get(`${versionApi}/specialite`, (req, res) => {
+  Specialite.getListSpecialite((results, err) => {
     if (err) {
       console.log(err);
       return;
@@ -1179,9 +1175,9 @@ app.post(`${versionApi}/specialite`, (req, res) => {
   }
 })
 
-app.get(`${versionApi}/responsablegrp/:id`, (req, res) => {
+app.get(`${versionApi}/specialite/:id`, (req, res) => {
   const id = req.params.id;
-  ResponsableGroup.getResponsableGroupById(id, (err, results) => {
+  Specialite.getSpecialiteById(id, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -1200,14 +1196,12 @@ app.get(`${versionApi}/responsablegrp/:id`, (req, res) => {
   });
 })
 
-app.patch(`${versionApi}/responsablegrp`, (req, res) => {
+app.patch(`${versionApi}/specialite`, (req, res) => {
   if (req.body === undefined || req.body === '') {
     res.json("Vous n'avez pas entré de message :( ")
   } else {
     const body = req.body;
-    const salt = genSaltSync(10);
-    body.password = hashSync(body.password, salt);
-    ResponsableGroup.update(body, (err, results) => {
+    Specialite.updateSpecialite(body, (err, results) => {
       if (err) {
         console.log(err);
         return;
@@ -1215,7 +1209,7 @@ app.patch(`${versionApi}/responsablegrp`, (req, res) => {
       else if (!results) {
         return res.json({
           success: 0,
-          message: "Failed to update role"
+          message: "Failed to update specialite"
         });
       } else {
         return res.status(200).json({
@@ -1227,9 +1221,9 @@ app.patch(`${versionApi}/responsablegrp`, (req, res) => {
   }
 });
 
-app.delete(`${versionApi}/responsablegrp/:id`, (req, res) => {
+app.delete(`${versionApi}/specialite/:id`, (req, res) => {
   const params = req.params;
-  ResponsableGroup.deleteResponsableGroup(params.id, (err, results) => {
+  Specialite.deleteSpecialite(params.id, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -1246,8 +1240,8 @@ app.delete(`${versionApi}/responsablegrp/:id`, (req, res) => {
 
 //CRUD de Niveau requests************************************************************
 
-app.get(`${versionApi}/cursus`, (req, res) => {
-  Cursus.getListResponsableGroup((results, err) => {
+app.get(`${versionApi}/niveau`, (req, res) => {
+  Niveau.getListNiveau((results, err) => {
     if (err) {
       console.log(err);
       return;
@@ -1284,9 +1278,9 @@ app.post(`${versionApi}/niveau`, (req, res) => {
 })
 
 
-app.get(`${versionApi}/responsablegrp/:id`, (req, res) => {
+app.get(`${versionApi}/niveau/:id`, (req, res) => {
   const id = req.params.id;
-  ResponsableGroup.getResponsableGroupById(id, (err, results) => {
+  Niveau.getNiveauById(id, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -1305,14 +1299,12 @@ app.get(`${versionApi}/responsablegrp/:id`, (req, res) => {
   });
 })
 
-app.patch(`${versionApi}/responsablegrp`, (req, res) => {
+app.patch(`${versionApi}/niveau`, (req, res) => {
   if (req.body === undefined || req.body === '') {
     res.json("Vous n'avez pas entré de message :( ")
   } else {
     const body = req.body;
-    const salt = genSaltSync(10);
-    body.password = hashSync(body.password, salt);
-    ResponsableGroup.update(body, (err, results) => {
+    Niveau.updateNiveau(body, (err, results) => {
       if (err) {
         console.log(err);
         return;
@@ -1320,7 +1312,7 @@ app.patch(`${versionApi}/responsablegrp`, (req, res) => {
       else if (!results) {
         return res.json({
           success: 0,
-          message: "Failed to update role"
+          message: "Failed to update niveau"
         });
       } else {
         return res.status(200).json({
@@ -1332,9 +1324,9 @@ app.patch(`${versionApi}/responsablegrp`, (req, res) => {
   }
 });
 
-app.delete(`${versionApi}/responsablegrp/:id`, (req, res) => {
+app.delete(`${versionApi}/niveau/:id`, (req, res) => {
   const params = req.params;
-  ResponsableGroup.deleteResponsableGroup(params.id, (err, results) => {
+  Niveau.deleteNiveau(params.id, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -1351,8 +1343,8 @@ app.delete(`${versionApi}/responsablegrp/:id`, (req, res) => {
 
 //CRUD de classe requests************************************************************
 
-app.get(`${versionApi}/cursus`, (req, res) => {
-  Cursus.getListResponsableGroup((results, err) => {
+app.get(`${versionApi}/classe`, (req, res) => {
+  Classe.getListClasse((results, err) => {
     if (err) {
       console.log(err);
       return;
@@ -1389,9 +1381,9 @@ app.post(`${versionApi}/classe`, (req, res) => {
 })
 
 
-app.get(`${versionApi}/responsablegrp/:id`, (req, res) => {
+app.get(`${versionApi}/classe/:id`, (req, res) => {
   const id = req.params.id;
-  ResponsableGroup.getResponsableGroupById(id, (err, results) => {
+  Classe.getClasseById(id, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -1410,14 +1402,12 @@ app.get(`${versionApi}/responsablegrp/:id`, (req, res) => {
   });
 })
 
-app.patch(`${versionApi}/responsablegrp`, (req, res) => {
+app.patch(`${versionApi}/classe`, (req, res) => {
   if (req.body === undefined || req.body === '') {
     res.json("Vous n'avez pas entré de message :( ")
   } else {
     const body = req.body;
-    const salt = genSaltSync(10);
-    body.password = hashSync(body.password, salt);
-    ResponsableGroup.update(body, (err, results) => {
+    Classe.updateClasse(body, (err, results) => {
       if (err) {
         console.log(err);
         return;
@@ -1425,7 +1415,7 @@ app.patch(`${versionApi}/responsablegrp`, (req, res) => {
       else if (!results) {
         return res.json({
           success: 0,
-          message: "Failed to update role"
+          message: "Failed to update classe"
         });
       } else {
         return res.status(200).json({
@@ -1437,9 +1427,9 @@ app.patch(`${versionApi}/responsablegrp`, (req, res) => {
   }
 });
 
-app.delete(`${versionApi}/responsablegrp/:id`, (req, res) => {
+app.delete(`${versionApi}/classe/:id`, (req, res) => {
   const params = req.params;
-  ResponsableGroup.deleteResponsableGroup(params.id, (err, results) => {
+  Classe.deleteClasse(params.id, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -1457,7 +1447,7 @@ app.delete(`${versionApi}/responsablegrp/:id`, (req, res) => {
 //CRUD de demandeMaster requests************************************************************
 
 app.get(`${versionApi}/demandemaster`, (req, res) => {
-  DemandeMaster.createDemandeMaster((results, err) => {
+  DemandeMaster.getListDemandeMaster((results, err) => {
     if (err) {
       console.log(err);
       return;
@@ -1494,9 +1484,9 @@ app.post(`${versionApi}/demandemaster`, (req, res) => {
 })
 
 
-app.get(`${versionApi}/responsablegrp/:id`, (req, res) => {
+app.get(`${versionApi}/demandemaster/:id`, (req, res) => {
   const id = req.params.id;
-  ResponsableGroup.getResponsableGroupById(id, (err, results) => {
+  DemandeMaster.getDemandeMasterById(id, (err, results) => {
     if (err) {
       console.log(err);
       return;
@@ -1540,7 +1530,7 @@ app.patch(`${versionApi}/demandemaster`, (req, res) => {
   }
 });
 
-app.delete(`${versionApi}/responsablegrp/:id`, (req, res) => {
+app.delete(`${versionApi}/demandemaster/:id`, (req, res) => {
   const params = req.params;
   ResponsableGroup.deleteResponsableGroup(params.id, (err, results) => {
     if (err) {

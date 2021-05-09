@@ -17,18 +17,18 @@ class DemandeMaster {
     }
 
     static getListDemandeMaster(callBack) {
-        connexion.query("SELECT * FROM `classe`,responsable_group,user,adresse WHERE classe.id_responsable=responsable_group.id_responsable_group and responsable_group.id_user=user.id_user and adresse.id_user=user.id_user",
+        connexion.query("SELECT * FROM `demande_master`, master, etudiant, etablissement,departement,user,adresse WHERE demande_master.id_master = master.id_master and master.id_departement=departement.id_departement and master.id_etablissement=etablissement.id_etablissement and demande_master.id_etudiant = etudiant.id_etudiant and etudiant.id_user = user.id_user and adresse.id_user=user.id_user ",
             (err, res) => {
                 if (err) throw err;
-                callBack(res.map((row) => new Classe(row)))
+                callBack(res.map((row) => new DemandeMaster(row)))
             }
         );
     }
 
-    static getDemandeMasterById(id_classe, callBack) {
+    static getDemandeMasterById(id_demande, callBack) {
         connexion.query(
-            "SELECT * FROM `classe`,responsable_group,user,adresse WHERE classe.id_responsable=responsable_group.id_responsable_group and responsable_group.id_user=user.id_user and adresse.id_user=user.id_user and classe.id_classe = ?",
-            [id_classe],
+            "SELECT * FROM `demande_master`, master, etudiant, etablissement,departement,user,adresse WHERE demande_master.id_master = master.id_master and master.id_departement=departement.id_departement and master.id_etablissement=etablissement.id_etablissement and demande_master.id_etudiant = etudiant.id_etudiant and etudiant.id_user = user.id_user and adresse.id_user=user.id_user AND demande_master.id_demande=?",
+            [id_demande],
             (err, res) => {
                 if (err) throw err;
                 return callBack(null, res);
@@ -49,7 +49,7 @@ class DemandeMaster {
 
     static deleteDemandeMaster(id_classe, callBack) {
         connexion.query(
-            "DELETE FROM `classe` WHERE `id_classe`=?",
+            "DELETE FROM `demande_master` WHERE id_demande = ?",
             [id_classe],
             (err, res) => {
                 if (err) throw err;
