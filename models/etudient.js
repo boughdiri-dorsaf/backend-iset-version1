@@ -25,10 +25,10 @@ class Etudient {
         );
     }
 
-    static getEtudientById(id_etudiant, callBack) {
+    static getEtudientById(id_user, callBack) {
         connexion.query(
-            "SELECT * FROM `etudiant`,classe,departement,user,adresse WHERE etudiant.id_classe=classe.id_classe and etudiant.id_departement=departement.id_departement and etudiant.id_user=user.id_user and user.id_user=adresse.id_user and etudiant.id_etudiant=?",
-            [id_etudiant],
+            "SELECT * FROM etudiant,classe,departement,user,adresse WHERE etudiant.id_classe=classe.id_classe and etudiant.id_departement=departement.id_departement and etudiant.id_user=user.id_user and user.id_user=adresse.id_user and user.id_user=?",
+            [id_user],
             (err, res) => {
                 if (err) throw err;
                 return callBack(null, res);
